@@ -1,0 +1,32 @@
+{
+  "name": "ctmlabs_user_details",
+  "version": "0.0.1",
+  "description": "store and retrieve user details that don't fit in ldap",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "should": "~1.2.2",
+    "superagent": "~0.14.2",
+    "couchdb_get_doc": "~0.0.1",
+    "express": "~3.2.3",
+    "lodash": "~1.0.1",
+    "couchdb_put_doc": "~0.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@www.ctmlabs.net:ctmlabs_user_details"
+  },
+  "keywords": [
+    "user",
+    "details"
+  ],
+  "author": "James E. Marca",
+  "license": "MIT",
+  "readmeFilename": "README.md"
+}

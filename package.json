@@ -9,10 +9,10 @@
   "dependencies": {
     "should": "~1.2.2",
     "superagent": "~0.14.2",
-    "couchdb_get_doc": "~0.0.1",
     "express": "~3.2.3",
     "lodash": "~1.0.1",
-    "couchdb_put_doc": "~0.0.1"
+    "couchdb_get_doc": "git://github.com/jmarca/couchdb_get_doc.git",
+    "couchdb_put_doc": "git://github.com/jmarca/couchdb_put_doc.git"
   },
   "devDependencies": {},
   "scripts": {

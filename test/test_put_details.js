@@ -83,7 +83,7 @@ describe('put',function(){
                          res.end()
                          return null
                      })
-            app.get('/:id'
+            app.get('/:uid'
                     ,getter
                     ,function(req,res,next){
                          res.json({'user_details':req.params.user_details})

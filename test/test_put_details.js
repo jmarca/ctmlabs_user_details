@@ -1,10 +1,27 @@
-/* global require console process describe it before after */
+/* global require console process describe it */
 
-var should = require('should')
-var superagent = require('superagent')
+const tap = require('tap')
+const utils = require('./utils.js')
 
-var put_details = require('../lib/put_details')
-var get_details = require('../lib/get_details')
+const put_details = require('../lib/put_details')
+const get_details = require('../lib/get_details')
+
+const superagent = require('superagent')
+
+const path    = require('path')
+// const rootdir = path.normalize(__dirname)
+// const config_okay = require('config_okay')
+// const config_file = rootdir+'/../test.config.json'
+
+const config={}
+
+const express = require('express')
+//const connect = require('connect')
+
+const http = require('http');
+const bodyParser = require('body-parser');
+const  _ = require('lodash')
+
 
 
 var env = process.env;
@@ -13,17 +30,18 @@ var cpass = env.COUCHDB_PASS ;
 var chost = env.COUCHDB_HOST || 'localhost';
 var cport = env.COUCHDB_PORT || 5984;
 
-var http = require('http')
-var express = require('express')
-var _ = require('lodash')
+
 
 var testhost = env.LINKS_TEST_HOST || '127.0.0.1'
 var testport = env.LINKS_TEST_PORT || 3001
 
 var test_db ='test%2fput%2fdocs'
 
-var couch = 'http://'+chost+':'+cport+'/'+test_db
-console.log('testing couchdb='+couch)
+config.couchdb = {db:test_db,
+                  host:chost,
+                  port:cport,
+                  auth:{username:cuser,
+                        password:cpass}}
 
 /**
  * create a test db, and populate it with data
@@ -46,111 +64,147 @@ var doc = {'StreetAddress1':'200 Clarendon St'
           ,'myurl':'http://www.example.com'
           ,'Phone':'617-555-1212'
           }
+var app
+function launch_server(){
+    app=express()
+    // parse urlencoded request bodies into req.body
+    app.use(bodyParser.urlencoded({extended: false}));
+    const putter = put_details({cdb:config.couchdb.db,
+                              cuser:cuser,
+                              cpass:cpass,
+                              chost:chost,
+                              cport:cport
+                             })
+    const getter = get_details({db:config.couchdb.db,
+                                auth:{"username":cuser,
+                                      "password":cpass},
+                                host:chost,
+                                port:cport
+                               })
+    app.post('/'
+            ,function(req,res,next){
+                // req.params = req.body
+                req.body._id=testingid
+                next()
+            })
+    app.post('/',putter)
+    app.post('/'
+            ,function(req,res,next){
+                res.setHeader('Content-Type', 'application/json')
+                res.end(JSON.stringify({'done':'done'}))
+             })
+    app.get('/:uid'
+            ,getter
+            ,function(req,res,next){
+                res.setHeader('Content-Type', 'application/json')
 
-describe('put',function(){
-    var app,server
-    var created_locally=false
-    before(function(done){
-        // create a test db, the put data into it
-        superagent.put(couch)
-        .auth(cuser,cpass)
-        .end(function(e,r){
-            r.should.have.property('error',false)
-            if(!e)
-                created_locally=true
-            app = express()
-            app.use(express.bodyParser());
-            var putter = put_details({cdb:test_db,
-                                      cuser:cuser,
-                                      cpass:cpass,
-                                      chost:chost,
-                                      cport:cport
-                                     })
-            var getter = get_details({cdb:test_db,
-                                      cuser:cuser,
-                                      cpass:cpass,
-                                      chost:chost,
-                                      cport:cport
-                                     })
-            app.post('/'
-                    ,function(req,res,next){
-                         req.params._id=testingid
-                         return next()
-                     }
-                    ,putter
-                    ,function(req,res,next){
-                         res.json({'done':'done'})
-                         res.end()
-                         return null
-                     })
-            app.get('/:uid'
-                    ,getter
-                    ,function(req,res,next){
-                         res.json({'user_details':req.params.user_details})
-                         return null
-                     })
-            server=http
-                   .createServer(app)
-                   .listen(testport,testhost,function(e){
-                       return done()
-                   })
-            return null
-        })
-        return null
-    })
-
-    after(function(done){
-        if(!created_locally) return done()
-
-        // bail in development
-        //console.log(couch)
-        //return done()
-        superagent.del(couch)
-        .type('json')
-        .auth(cuser,cpass)
-        .end(function(e,r){
-            return done(e)
-        })
-        return null
-    })
-
-    it('should put user details',function(done){
-        var uri=testhost+':'+testport+'/'
-        superagent.post(uri)
-        .type('json')
-        .send(doc)
-        .end(function(e,r){
-            if (e){
-                return done(e)
-            }
-            var doc_uri=[couch,testingid].join('/')
-            superagent.get(doc_uri)
-            .set('accept','application/json')
-            .end(function(e,r){
-                should.not.exist(e)
-                r.should.have.property('body')
-                var b = r.body
-                _.each(doc,function(v,k){
-                    v.should.eql(b[k])
-                });
-                // now test the getter
-                superagent.get(uri+testingid)
-                .set('accept','application/json')
-                .end(function(e,r){
-                    r.should.have.property('body')
-                    r.body.should.have.property('user_details')
-                    var c = r.body.user_details
-                    _.each(c,function(v,k){
-                        v.should.eql(b[k])
-                    });
-                    return done()
-                })
+                res.end(JSON.stringify({'user_details':req.params.user_details}))
                 return null
             })
-
-            return null
+    return new Promise((resolve,reject)=>{
+        const server = app.listen(testport,function(){
+            console.log('listening')
+            resolve(server)
         })
-
     })
 
-})
+
+}
+
+// async function put_test(t){
+
+//     // not sure how to do this anymore
+//     await t.test('should get user details', async ttt => {
+
+//         // now test the getter
+//         console.log('testing the getter')
+//         await superagent.get(uri+testingid)
+//             .then( res => {
+//                 ttt.ok(res.body)
+//                 ttt.ok(res.body.user_details)
+
+//                 var c = res.body.user_details
+//                         _.each(c,function(v,k){
+//                             if(k != '_id' && k != '_rev'){
+//                                 ttt.equal(v,doc[k])
+//                             }
+//                         })
+
+//             })
+//             .catch(err => {
+//                 console.log(err.message)
+//             })
+//         console.log('done with ttt')
+//         await ttt.end()
+//     })
+//     t.end()
+//     console.log('done with t')
+// }
+
+
+
+
+console.log('create db')
+const res = utils.create_tempdb(config)
+
+async function runit() {
+    const server = await launch_server()
+    console.log('server launched')
+
+
+
+    await tap.test('put function', async function(t){
+        console.log('testing')
+        const uri=testhost+':'+testport+'/'
+        await superagent.post(uri)
+            .type('form')
+            .send(doc)
+            .then(()=>{
+                t.pass()
+            })
+            .catch( ()=>{
+                console.log('caught error')
+                t.fail()
+            })
+            .then (()=>{
+                t.end()
+            })
+    })
+    await tap.test('meh',async function(t){
+        console.log('doc posted')
+        const couch = 'http://'+chost+':'+cport+'/'+config.couchdb.db
+        await  superagent.get(couch+'/_all_docs')
+            .then( res => {
+                console.log('from get alldocs')
+                t.ok(res.body)
+                return null
+            })
+            .catch( ()=>{
+                console.log('caught error')
+            })
+
+        console.log('alldocs is fine')
+
+        const couch_doc_uri =[couch,testingid].join('/')
+        await superagent.get(couch_doc_uri)
+            .then( res => {
+                console.log('from get document,')
+                t.ok(res.body)
+                var b = res.body
+                _.each(doc,function(v,k){
+                    t.equal(v,b[k])
+                })
+            })
+            .catch( ()=>{
+                console.log('caught error')
+            })
+        console.log('done with test')
+        t.end()
+        return null
+    })
+    console.log('done with test?')
+
+    tap.end()
+    server.close()
+}
+runit()

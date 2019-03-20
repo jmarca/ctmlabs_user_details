@@ -1,6 +1,8 @@
 # Sample .travis.yml for R projects from https://github.com/craigcitro/r-travis
+dist: xenial
 
 language: node_js
+
 node_js:
   - "node"
   # - "8"
@@ -12,8 +14,16 @@ env:
 services:
   - couchdb
 
+
 before_script:
-  - curl -s -X PUT http://localhost:5984/_config/admins/james -d '"grobblefruit"'
+  # need couchdb 2+
+  - echo "deb https://apache.bintray.com/couchdb-deb trusty main" \
+    | sudo tee -a /etc/apt/sources.list
+  - curl -L https://couchdb.apache.org/repo/bintray-pubkey.asc \
+    | sudo apt-key add -
+  - sudo apt-get update && sudo apt-get install couchdb
+  - sudo -i -u couchdb COUCHDB_USER=james COUCHDB_PASSWORD=grobblefruit /home/couchdb/bin/couchdb
+#  - curl -s -X PUT http://localhost:5984/_config/admins/james -d '"grobblefruit"'
 
 notifications:
   email:

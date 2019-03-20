@@ -1,0 +1,19 @@
+# Sample .travis.yml for R projects from https://github.com/craigcitro/r-travis
+
+language: node_js
+node_js:
+  - "node"
+  - "8"
+env:
+  - COUCHDB_USER=james
+  - COUCHDB_PASSWORD=grobblefruit
+  - COUCHDB_PASS=grobblefruit
+
+
+services:
+  - couchdb
+
+notifications:
+  email:
+    on_success: change
+    on_failure: change

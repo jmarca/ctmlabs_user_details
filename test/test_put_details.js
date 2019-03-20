@@ -144,7 +144,7 @@ function launch_server(){
 
 
 
-console.log('create db')
+console.log('create db with', config)
 const res = utils.create_tempdb(config)
 
 async function runit() {
@@ -154,8 +154,8 @@ async function runit() {
 
 
     await tap.test('put function', async function(t){
-        console.log('testing')
         const uri=testhost+':'+testport+'/'
+        console.log('testing post to',uri)
         await superagent.post(uri)
             .type('form')
             .send(doc)
@@ -186,13 +186,14 @@ async function runit() {
         console.log('alldocs is fine')
 
         const couch_doc_uri =[couch,testingid].join('/')
+        console.log(couch_doc_uri)
         await superagent.get(couch_doc_uri)
             .then( res => {
                 console.log('from get document,')
                 t.ok(res.body)
                 var b = res.body
                 _.each(doc,function(v,k){
-                    t.equal(v,b[k])
+                    t.equal(b[k],v)
                 })
             })
             .catch( ()=>{

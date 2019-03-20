@@ -8,12 +8,12 @@ node_js:
   # - "8"
 
 env:
-  - COUCHDB_USER=james COUCHDB_PASSWORD=grobblefruit COUCHDB_PASS=grobblefruit
+  global:
+    - COUCHDB_USER=james COUCHDB_PASSWORD=grobblefruit COUCHDB_PASS=grobblefruit
 
 addons:
   apt:
     sources:
-      - ppa:couchdb/stable
       - sourceline: 'deb https://apache.bintray.com/couchdb-deb xenial main'
         key_url: 'https://couchdb.apache.org/repo/bintray-pubkey.asc'
     packages:
@@ -32,7 +32,7 @@ before_script:
   #   | sudo apt-key add -
   # - sudo apt-get update && sudo apt-get install couchdb
   # - sudo -i -u couchdb COUCHDB_USER=james COUCHDB_PASSWORD=grobblefruit /home/couchdb/bin/couchdb
-#  - curl -s -X PUT http://localhost:5984/_config/admins/james -d '"grobblefruit"'
+  -  curl -s -X PUT http://localhost:5984/_config/admins/james -d '"grobblefruit"'
 
 notifications:
   email:

@@ -16,7 +16,7 @@ services:
 
 before_install:
   - docker pull couchdb:$COUCHDB_VERSION
-  - docker run -d  -e COUCHDB_USER=james  -e COUCHDB_PASSWORD=grobblefruit -p 5984:5984 couchdb:$COUCHDB_VERSION
+  - docker run -d  -e COUCHDB_USER=$COUCHDB_USER  -e COUCHDB_PASSWORD=$COUCHDB_PASSWORD -p 5984:5984 couchdb:$COUCHDB_VERSION
 
 
 before_script:

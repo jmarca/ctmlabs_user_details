@@ -159,7 +159,8 @@ async function runit() {
         await superagent.post(uri)
             .type('form')
             .send(doc)
-            .then(()=>{
+            .then((res)=>{
+                console.log(res.body)
                 t.pass()
             })
             .catch( ()=>{
@@ -175,7 +176,7 @@ async function runit() {
         const couch = 'http://'+chost+':'+cport+'/'+config.couchdb.db
         await  superagent.get(couch+'/_all_docs')
             .then( res => {
-                console.log('from get alldocs')
+                console.log('from get alldocs', res.body)
                 t.ok(res.body)
                 return null
             })

@@ -1,5 +1,5 @@
 # Sample .travis.yml for R projects from https://github.com/craigcitro/r-travis
-dist: xenial
+# dist: xenial
 
 language: node_js
 
@@ -9,22 +9,21 @@ node_js:
 
 env:
   global:
-    - COUCHDB_USER=james COUCHDB_PASSWORD=grobblefruit COUCHDB_PASS=grobblefruit
-
-addons:
-  apt:
-    sources:
-      - sourceline: 'deb https://apache.bintray.com/couchdb-deb xenial main'
-        key_url: 'https://couchdb.apache.org/repo/bintray-pubkey.asc'
-    packages:
-      - couchdb
-
+    - COUCHDB_VERSION=2.3.1 COUCHDB_USER=james COUCHDB_PASSWORD=grobblefruit COUCHDB_PASS=grobblefruit
 
 services:
-  - couchdb
+  - docker
+
+before_install:
+  - docker pull couchdb:$COUCHDB_VERSION
+  - docker run -d  -e COUCHDB_USER=james  -e COUCHDB_PASSWORD=grobblefruit -p 5984:5984 couchdb:$COUCHDB_VERSION
 
 
 before_script:
+  # Make sure CouchDB is up
+  - while [ $? -ne 0 ]; do sleep 1 && curl -v http://localhost:5984; done
+  - curl -X PUT http://localhost:5984/_users
+  - curl -X PUT http://localhost:5984/_replicator
   # need couchdb 2+
   # - echo "deb https://apache.bintray.com/couchdb-deb trusty main" \
   #   | sudo tee -a /etc/apt/sources.list
@@ -32,7 +31,7 @@ before_script:
   #   | sudo apt-key add -
   # - sudo apt-get update && sudo apt-get install couchdb
   # - sudo -i -u couchdb COUCHDB_USER=james COUCHDB_PASSWORD=grobblefruit /home/couchdb/bin/couchdb
-  -  curl -s -X PUT http://localhost:5984/_config/admins/james -d '"grobblefruit"'
+  # -  curl -s -X PUT http://localhost:5984/_config/admins/james -d '"grobblefruit"'
 
 notifications:
   email:

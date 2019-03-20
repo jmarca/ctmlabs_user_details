@@ -22,8 +22,8 @@ before_install:
 before_script:
   # Make sure CouchDB is up
   - while [ $? -ne 0 ]; do sleep 1 && curl -v http://localhost:5984; done
-  - curl -X PUT http://localhost:5984/_users
-  - curl -X PUT http://localhost:5984/_replicator
+  # - curl -X PUT http://localhost:5984/_users
+  # - curl -X PUT http://localhost:5984/_replicator
   # need couchdb 2+
   # - echo "deb https://apache.bintray.com/couchdb-deb trusty main" \
   #   | sudo tee -a /etc/apt/sources.list

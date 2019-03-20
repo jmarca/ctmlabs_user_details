@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/jmarca/ctmlabs_user_details.svg?branch=master)](https://travis-ci.org/jmarca/ctmlabs_user_details)
+
 # User details
 
 We are using ldap to save users, but i need something intermediate to

@@ -1,5 +1,5 @@
 # Sample .travis.yml for R projects from https://github.com/craigcitro/r-travis
-# dist: xenial
+dist: xenial
 
 language: node_js
 

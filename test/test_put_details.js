@@ -146,8 +146,9 @@ function launch_server(){
 
 console.log('going to create db with', config)
 const res = utils.create_tempdb(config)
-console.log('did it work?',res)
 async function runit() {
+    await res
+    console.log('did it work?',res)
     const server = await launch_server()
     console.log('server launched')
 

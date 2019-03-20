@@ -10,6 +10,15 @@ node_js:
 env:
   - COUCHDB_USER=james COUCHDB_PASSWORD=grobblefruit COUCHDB_PASS=grobblefruit
 
+addons:
+  apt:
+    sources:
+      - ppa:couchdb/stable
+      - sourceline: 'deb https://apache.bintray.com/couchdb-deb xenial main'
+        key_url: 'https://couchdb.apache.org/repo/bintray-pubkey.asc'
+    packages:
+      - couchdb
+
 
 services:
   - couchdb
@@ -17,12 +26,12 @@ services:
 
 before_script:
   # need couchdb 2+
-  - echo "deb https://apache.bintray.com/couchdb-deb trusty main" \
-    | sudo tee -a /etc/apt/sources.list
-  - curl -L https://couchdb.apache.org/repo/bintray-pubkey.asc \
-    | sudo apt-key add -
-  - sudo apt-get update && sudo apt-get install couchdb
-  - sudo -i -u couchdb COUCHDB_USER=james COUCHDB_PASSWORD=grobblefruit /home/couchdb/bin/couchdb
+  # - echo "deb https://apache.bintray.com/couchdb-deb trusty main" \
+  #   | sudo tee -a /etc/apt/sources.list
+  # - curl -L https://couchdb.apache.org/repo/bintray-pubkey.asc \
+  #   | sudo apt-key add -
+  # - sudo apt-get update && sudo apt-get install couchdb
+  # - sudo -i -u couchdb COUCHDB_USER=james COUCHDB_PASSWORD=grobblefruit /home/couchdb/bin/couchdb
 #  - curl -s -X PUT http://localhost:5984/_config/admins/james -d '"grobblefruit"'
 
 notifications:

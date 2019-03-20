@@ -176,7 +176,7 @@ async function runit() {
         const couch = 'http://'+chost+':'+cport+'/'+config.couchdb.db
         await  superagent.get(couch+'/_all_docs')
             .then( res => {
-                console.log('from get alldocs', res.body)
+                console.log('from get alldocs', couch, res)
                 t.ok(res.body)
                 return null
             })

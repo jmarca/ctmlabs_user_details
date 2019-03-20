@@ -148,7 +148,6 @@ console.log('going to create db with', config)
 const res = utils.create_tempdb(config)
 async function runit() {
     await res
-    console.log('did it work?',res)
     const server = await launch_server()
     console.log('server launched')
 
@@ -161,7 +160,6 @@ async function runit() {
             .type('form')
             .send(doc)
             .then((res)=>{
-                console.log(res.body)
                 t.pass()
             })
             .catch( ()=>{
@@ -201,11 +199,9 @@ async function runit() {
             .catch( ()=>{
                 console.log('caught error')
             })
-        console.log('done with test')
         t.end()
         return null
     })
-    console.log('done with test?')
 
     tap.end()
     server.close()

@@ -7,21 +7,18 @@
     "test": "test"
   },
   "dependencies": {
-    "connect": "^3.6.6",
     "couchdb_get_doc": "git://github.com/jmarca/couchdb_get_doc.git",
     "couchdb_put_doc": "git://github.com/jmarca/couchdb_put_doc.git",
-    "express": "^4.16.4",
-    "lodash": "^4.17.11",
-    "should": "~1.2.2",
-    "superagent": "^4.1.0",
-    "tap": "^12.6.0"
+    "superagent": "^4.1.0"
   },
   "devDependencies": {
     "config_okay": "^1.0.1",
-    "mocha": "^6.0.2"
+    "express": "^4.16.4",
+    "lodash": "^4.17.11",
+    "tap": "^12.6.0"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "tap test/test*.js"
   },
   "repository": {
     "type": "git",

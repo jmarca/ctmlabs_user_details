@@ -18,7 +18,6 @@ async function create_tempdb(config){
           .type('json')
           .auth(config.couchdb.auth.username
                 ,config.couchdb.auth.password)
-    console.log(res)
     return res
 }
 

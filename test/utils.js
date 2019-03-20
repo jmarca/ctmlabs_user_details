@@ -10,13 +10,15 @@ async function create_tempdb(config){
                           date.getMilliseconds()].join('-')
     config.couchdb.db = test_db_unique
     const cdb =
-        [config.couchdb.host+':'+config.couchdb.port
-        ,config.couchdb.db].join('/')
+          [config.couchdb.host+':'+config.couchdb.port
+           ,config.couchdb.db].join('/')
+
 
     const res = await superagent.put(cdb)
           .type('json')
           .auth(config.couchdb.auth.username
                 ,config.couchdb.auth.password)
+    console.log(res)
     return res
 }
 

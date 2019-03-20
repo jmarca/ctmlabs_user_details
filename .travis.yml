@@ -13,6 +13,9 @@ env:
 services:
   - couchdb
 
+before_script:
+  - curl -s -X PUT http://localhost:5984/_config/admins/james -d '"grobblefruit"'
+
 notifications:
   email:
     on_success: change

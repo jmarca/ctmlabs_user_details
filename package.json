@@ -9,7 +9,7 @@
   "dependencies": {
     "couchdb_get_doc": "git://github.com/jmarca/couchdb_get_doc.git",
     "couchdb_put_doc": "git://github.com/jmarca/couchdb_put_doc.git",
-    "superagent": "^4.1.0"
+    "superagent": "^5.0.2"
   },
   "devDependencies": {
     "config_okay": "^1.0.1",

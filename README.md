@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/jmarca/ctmlabs_user_details.svg?branch=master)](https://travis-ci.org/jmarca/ctmlabs_user_details)
+[![Build Status](https://travis-ci.org/jmarca/ctmlabs_user_details.svg?branch=master)](https://travis-ci.org/jmarca/ctmlabs_user_details) [![Greenkeeper badge](https://badges.greenkeeper.io/jmarca/ctmlabs_user_details.svg)](https://greenkeeper.io/)
 
 # User details
 
